@@ -3,6 +3,15 @@
 import os
 import json
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+
 os.system('rm List.json')
 os.system('rm -rf Product_files')
 os.system('mkdir Product_files')
@@ -40,7 +49,7 @@ for List in ProductList:
     itemGet = ProductList[List]["availableVariants"]["v1.1.0"]["get"]
     totalNumber = len(ProductList)
 
-    print "Current Product" + itemName,
+    print bcolors.WARNING + "Current Product: " + itemName + bcolors.ENDC,
     print "{taskNumber}/{totalNumber}".format(taskNumber=taskNumber, totalNumber=totalNumber)
 
     request_url2 = 'curl -H "{Header_affidID}" -H "{Header_affidToken}" "{itemGet}" > Product_files/{itemName}.zip'.format(
@@ -66,7 +75,7 @@ for List in ProductList:
         if currentFile.endswith('.csv'):
             # os.rename(currentFile,'{itemName}.csv'.format(itemName=itemName))
             os.system('mv Product_files/{currentFile} Product_files/{itemName}.csv'.format(currentFile=currentFile, itemName=itemName))
-            print "Created: " + itemName + ".csv"
+            print bcolors.OKGREEN + "Created: " + itemName + ".csv" + bcolors.ENDC
             break
     taskNumber = taskNumber + 1
     print
