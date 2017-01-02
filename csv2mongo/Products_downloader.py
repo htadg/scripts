@@ -49,7 +49,7 @@ for List in ProductList:
     itemGet = ProductList[List]["availableVariants"]["v1.1.0"]["get"]
     totalNumber = len(ProductList)
 
-    print bcolors.WARNING + "Current Product: " + itemName + bcolors.ENDC,
+    print bcolors.OKBLUE + "Current Product: " + itemName + bcolors.ENDC,
     print "{taskNumber}/{totalNumber}".format(taskNumber=taskNumber, totalNumber=totalNumber)
 
     request_url2 = 'curl -H "{Header_affidID}" -H "{Header_affidToken}" "{itemGet}" > Product_files/{itemName}.zip'.format(
