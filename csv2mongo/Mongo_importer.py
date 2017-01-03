@@ -32,7 +32,7 @@ for csvfilename in os.listdir(path):
     with open('{}/{}'.format(path, csvfilename), 'w') as f:
         f.write(ls)
 
-    with open("Product_files/{}".format(csvfilename), 'rb') as csvfile:
+    with open("Product_files/{}".format(csvfilename), 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         header = reader.fieldnames
 
