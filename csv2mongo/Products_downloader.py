@@ -47,13 +47,15 @@ for List in ProductList:
     itemName = ProductList[List]["apiName"]
     itemGet = ProductList[List]["availableVariants"]["v1.1.0"]["get"]
     totalNumber = len(ProductList)
+    oldFilename = itemGet[64:].split('?')[0]
 
-    print bcolors.OKBLUE + "Current Product: " + itemName + bcolors.ENDC,
-    print "{taskNumber}/{totalNumber}".format(taskNumber=taskNumber, totalNumber=totalNumber)
+    print bcolors.OKBLUE + "Task:" + "{taskNumber}/{totalNumber}".format(taskNumber=taskNumber, totalNumber=totalNumber),
+    print "| Current Product: " + itemName + bcolors.ENDC
 
     request_url2 = 'curl -H "{Header_affidID}" -H "{Header_affidToken}" "{itemGet}" > Product_files/{itemName}.zip'.format(
         Header_affidID=Header_affidID, Header_affidToken=Header_affidToken, itemGet=itemGet, itemName=itemName
     )
+
 
     # curl -H "Fk-Affiliate-Id:<your_affiliate_id>" -H
     # "Fk-Affiliate-Token:<your_affiliate_token>"
@@ -70,11 +72,12 @@ for List in ProductList:
 
     os.system('rm Product_files/{itemName}.zip'.format(itemName=itemName))
 
-    for currentFile in os.listdir('Product_files/'):
-        if currentFile.endswith('.csv'):
-            # os.rename(currentFile,'{itemName}.csv'.format(itemName=itemName))
-            os.system('mv Product_files/{currentFile} Product_files/{itemName}.csv'.format(currentFile=currentFile, itemName=itemName))
-            print bcolors.OKGREEN + "Created: " + itemName + ".csv" + bcolors.ENDC
-            break
+    os.rename('Product_files/{oldFilename}.csv'.format(oldFilename=oldFilename),'Product_files/{itemName}.csv'.format(itemName=itemName))
+
+    # os.system('mv Product_files/{oldFilename} Product_files/{itemName}.csv'.format(oldFilename=oldFilename, itemName=itemName))
+    # os.system("rename 's/oldname/newname' Product_files/{oldFilename} Product_files/{itemName}.csv".format(oldFilename=oldFilename, itemName=itemName))
+
+    print bcolors.OKGREEN + "Created: " + itemName + ".csv" + bcolors.ENDC
+
     taskNumber = taskNumber + 1
     print
