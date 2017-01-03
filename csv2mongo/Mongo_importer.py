@@ -32,7 +32,7 @@ for csvfilename in os.listdir(path):
     with open('{}/{}'.format(path, csvfilename), 'w') as f:
         f.write(ls)
 
-    with open("Product_files/{}".format(csvfilename), 'r') as csvfile:
+    with open("Product_files/{}".format(csvfilename), 'rb') as csvfile:
         reader = csv.DictReader(csvfile)
         header = reader.fieldnames
 
@@ -64,7 +64,7 @@ for csvfilename in os.listdir(path):
                     row["image400"] = c
                     row["image800"] = d
                 elif "Brand" in field:
-                    row['brand'] = each[field].decode('utf8') if each[field] != "" else " "
+                    row['brand'] = each[field].decode('utf8', 'ignore') if each[field] != "" else " "
                 elif "productUrl" in field:
                     if not each[field].endswith('9dukan'):
                         row[field] = each[field] + '&affid=9dukan'
