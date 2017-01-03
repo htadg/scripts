@@ -34,8 +34,7 @@ request_url = 'curl -H "{}" -H "{}" "{}" > List.json'.format(
 os.system(request_url)
 # Product Listing downloaded and saved to List.json
 
-with open('List.json') as data_file:
-    data = json.load(data_file)
+
 
 # pprint(data)
 print

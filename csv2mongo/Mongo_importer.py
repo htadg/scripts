@@ -64,7 +64,10 @@ for csvfilename in os.listdir(path):
                     row["image400"] = c
                     row["image800"] = d
                 elif "Brand" in field:
-                    row['brand'] = each[field] if each[field] != "" else " "
+                    row['brand'] = each[field].decode('utf8') if each[field] != "" else " "
+                elif "productUrl" in field:
+                    if not each[field].endswith('9dukan'):
+                        row[field] = each[field] + '&affid=9dukan'
                 else:
-                    row[field] = each[field] if each[field] != "" else " "
+                    row[field] = each[field].decode('utf8') if each[field] != "" else " "
             db[csvfilename.split('.')[0]].insert_one(row)
