@@ -12,6 +12,14 @@ import sys
 from pymongo import MongoClient
 
 
+def convert2unicode(mydict):
+    for k, v in mydict.iteritems():
+        if isinstance(v, str):
+            mydict[k] = unicode(v, errors = 'replace')
+        elif isinstance(v, dict):
+            convert2unicode(v)
+
+
 path = 'Product_files/'
 for csvfilename in os.listdir(path):
     if not csvfilename.endswith('.csv'):
@@ -70,4 +78,5 @@ for csvfilename in os.listdir(path):
                         row[field] = each[field] + '&affid=9dukan'
                 else:
                     row[field] = each[field] if each[field] != "" else " "
+            convert2unicode(row)
             db[csvfilename.split('.')[0]].insert_one(row)
