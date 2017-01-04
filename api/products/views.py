@@ -20,7 +20,7 @@ def getBrands():
 brands = getBrands()
 
 def normalizeQuery(query):
-	if len(query) < 5:
+	if len(query) <= 5:
 		return query
 	ls = []
 	for i in brands:
@@ -29,11 +29,13 @@ def normalizeQuery(query):
 			ls = [query[index:index+len(i)], query[:index]+query[index+len(i):]]
 			return ls
 	if ls == []:
-		nums = [0,1,2,3,4,5,6,7,8,9]
-		for n in nums:
-			if str(n) in query.lower():
-				ind = query.lower().find(str(n))
-				res = query[:ind] + " " + query[ind:]
+		for n in query.lower():
+			if n.isdigit():
+				ind = query.lower().find(n)
+				if query[ind-1] != ' ':
+					res = query[:ind] + " " + query[ind:]
+				else:
+					res = query[:ind] + query[ind:]
 				return res
 	return query
 
@@ -77,39 +79,44 @@ def getList(request, category):
 	in_stock = str(in_stock) if in_stock != '' else 'all'
 	count = int(count) if count != '' else None
 
-	if search != '*':
+	q = ''
+	if search != '*' and len(search) > 5:
 		try:
-			brand, search = normalizeQuery(search)
+			brand, q = normalizeQuery(search)
 		except:
-			search = normalizeQuery(search)
+			q = normalizeQuery(search)
 
-	rSearch = search
+	rSearch = search if q == '' else q
 	rBrand = brand
 	in_stock = in_stock.lower()
+	print rSearch
 	if search != '*':
-		rSearch = '.*'+search+'.*'
+		rSearch = '.*'+rSearch+'.*'
 		rSearch = re.compile(rSearch, re.IGNORECASE)
 	if brand is not None:
 		brand = '.*'+brand+'.*'
 		rBrand = re.compile(brand, re.IGNORECASE)
 	else:
 		rBrand = re.compile(".*")
-
 	results = searchDB(category=category, rSearch=rSearch, rBrand=rBrand, in_stock=in_stock, count=count)
 
 	if results.count() == 0:
 		q = normalizeQuery(search)
 		search = '.*'+q+'.*'
 		rSearch = re.compile(search, re.IGNORECASE)
+		print q
 		results = searchDB(category=category, rSearch=rSearch, rBrand=rBrand, in_stock=in_stock, count=count)
 		if results.count() == 0:
-			q = q.split()
-			prod, mod = q[0], q[1]
-			search = prod[0:-1]+" "+prod[-1]+mod
-			search = '.*'+search+'.*'
-			rSearch = re.compile(search, re.IGNORECASE)
-			results = searchDB(category=category, rSearch=rSearch, rBrand=rBrand, in_stock=in_stock, count=count)
-
+			try:
+				q = q.split()
+				prod, mod = q[0], q[1]
+				search = prod[0:-1]+" "+prod[-1]+mod
+				search = '.*'+search+'.*'
+				rSearch = re.compile(search, re.IGNORECASE)
+				print q
+				results = searchDB(category=category, rSearch=rSearch, rBrand=rBrand, in_stock=in_stock, count=count)
+			except Exception as e:
+				print str(e)
 	response = {}
 	response['status'] = 1
 	ls = []
